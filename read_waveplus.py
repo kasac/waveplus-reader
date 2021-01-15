@@ -66,13 +66,16 @@ if len(sys.argv) > 3:
 else:
     Mode = 'terminal' # (default) print to terminal 
 
-if Mode!='pipe' and Mode!='terminal':
+if Mode!='pipe' and Mode!='terminal' and Mode!='file':
     print "ERROR: Invalid piping method."
     print "USAGE: read_waveplus.py SN SAMPLE-PERIOD [pipe > yourfile.txt]"
     print "    where SN is the 10-digit serial number found under the magnetic backplate of your Wave Plus."
     print "    where SAMPLE-PERIOD is the time in seconds between reading the current values."
     print "    where [pipe > yourfile.txt] is optional and specifies that you want to pipe your results to yourfile.txt."
     sys.exit(1)
+
+if Mode == 'file':
+    outfile = sys.argv[4]
 
 SerialNumbers = sys.argv[1]
 SamplePeriod = int(sys.argv[2])
@@ -204,6 +207,8 @@ class Sensors():
         return self.sensor_units[sensor_index]
 
 try:
+    if Mode == 'file':
+        file = open(outfile, 'w+')
     #---- Initialize ----#
     waveplus_devices = []
     device_serials = SerialNumbers.split(",")
@@ -221,6 +226,8 @@ try:
         print tableprint.header(header, width=12)
     elif (Mode=='pipe'):
         print header
+    elif (Mode=='file'):
+        file.write(header)
 
     while True:
         for waveplus in waveplus_devices:
@@ -237,7 +244,7 @@ try:
                 except Exception as e:
                     time.sleep(5)
                     continue
-                
+
                 # read values
                 sensors = waveplus.read()
                 
@@ -257,6 +264,8 @@ try:
                     print tableprint.row(data, width=12)
                 elif (Mode=='pipe'):
                     print data
+                elif (Mode=='file'):
+                    file.write(data)
                 
                 waveplus.disconnect()
                 break
@@ -266,5 +275,7 @@ try:
         time.sleep(SamplePeriod)
             
 finally:
+    if Mode == 'file':
+        file.close()
     for waveplus in waveplus_devices:
         waveplus.disconnect()
