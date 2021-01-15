@@ -31,6 +31,7 @@ import sys
 import time
 import struct
 import tableprint
+from datetime import datetime
 
 # ===============================
 # Script guards for correct usage
@@ -44,7 +45,7 @@ if len(sys.argv) < 3:
     print "    where [pipe > yourfile.txt] is optional and specifies that you want to pipe your results to yourfile.txt."
     sys.exit(1)
 
-if sys.argv[1].isdigit() is not True or len(sys.argv[1]) != 10:
+if len(sys.argv[1]) < 10:
     print "ERROR: Invalid SN format."
     print "USAGE: read_waveplus.py SN SAMPLE-PERIOD [pipe > yourfile.txt]"
     print "    where SN is the 10-digit serial number found under the magnetic backplate of your Wave Plus."
@@ -210,7 +211,7 @@ try:
     
     print "Device serial number: %s" %(SerialNumber)
     
-    header = ['Humidity', 'Radon ST avg', 'Radon LT avg', 'Temperature', 'Pressure', 'CO2 level', 'VOC level']
+    header = ['SN', 'Timestamp', 'Humidity', 'Radon ST avg', 'Radon LT avg', 'Temperature', 'Pressure', 'CO2 level', 'VOC level']
     
     if (Mode=='terminal'):
         print tableprint.header(header, width=12)
@@ -243,7 +244,7 @@ try:
         VOC_lvl      = str(sensors.getValue(SENSOR_IDX_VOC_LVL))              + " " + str(sensors.getUnit(SENSOR_IDX_VOC_LVL))
         
         # Print data
-        data = [humidity, radon_st_avg, radon_lt_avg, temperature, pressure, CO2_lvl, VOC_lvl]
+        data = [SerialNumber, datetime.today().isoformat(), humidity, radon_st_avg, radon_lt_avg, temperature, pressure, CO2_lvl, VOC_lvl]
         
         if (Mode=='terminal'):
             print tableprint.row(data, width=12)
