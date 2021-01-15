@@ -74,7 +74,7 @@ if Mode!='pipe' and Mode!='terminal':
     print "    where [pipe > yourfile.txt] is optional and specifies that you want to pipe your results to yourfile.txt."
     sys.exit(1)
 
-SerialNumber = int(sys.argv[1])
+SerialNumbers = int(sys.argv[1])
 SamplePeriod = int(sys.argv[2])
 MaxRetries = 5
 
@@ -204,57 +204,60 @@ class Sensors():
 
 try:
     #---- Initialize ----#
-    waveplus = WavePlus(SerialNumber)
+    waveplus_devices = []
+    device_serials = SerialNumbers.split(";")
+    for serial in device_serials:
+        waveplus_devices.append(WavePlus(serial))
     
     if (Mode=='terminal'):
         print "\nPress ctrl+C to exit program\n"
     
-    print "Device serial number: %s" %(SerialNumber)
+    # print "Device serial number: %s" %(SerialNumber)
     
-    header = ['SN', 'Timestamp', 'Humidity', 'Radon ST avg', 'Radon LT avg', 'Temperature', 'Pressure', 'CO2 level', 'VOC level']
+    header = ['Timestamp', 'SN', 'Humidity', 'Radon ST avg', 'Radon LT avg', 'Temperature', 'Pressure', 'CO2 level', 'VOC level']
     
     if (Mode=='terminal'):
         print tableprint.header(header, width=12)
     elif (Mode=='pipe'):
         print header
 
-    tries = 0
     while True:
-        
-        try:
-            tries = tries + 1
-            waveplus.connect()
-        except BTLEException as e:
-            if tries <= MaxRetries:
-                time.sleep(5)
-                continue
-            else:
+        for waveplus in waveplus_devices:
+            tries = 0
+            try:
+                tries = tries + 1
+                waveplus.connect()
+            except BTLEException as e:
+                if tries <= MaxRetries:
+                    time.sleep(5)
+                    continue
+                else:
+                    break
+            
+            # read values
+            sensors = waveplus.read()
+            
+            # extract
+            humidity     = str(sensors.getValue(SENSOR_IDX_HUMIDITY))             + " " + str(sensors.getUnit(SENSOR_IDX_HUMIDITY))
+            radon_st_avg = str(sensors.getValue(SENSOR_IDX_RADON_SHORT_TERM_AVG)) + " " + str(sensors.getUnit(SENSOR_IDX_RADON_SHORT_TERM_AVG))
+            radon_lt_avg = str(sensors.getValue(SENSOR_IDX_RADON_LONG_TERM_AVG))  + " " + str(sensors.getUnit(SENSOR_IDX_RADON_LONG_TERM_AVG))
+            temperature  = str(sensors.getValue(SENSOR_IDX_TEMPERATURE))          + " " + str(sensors.getUnit(SENSOR_IDX_TEMPERATURE))
+            pressure     = str(sensors.getValue(SENSOR_IDX_REL_ATM_PRESSURE))     + " " + str(sensors.getUnit(SENSOR_IDX_REL_ATM_PRESSURE))
+            CO2_lvl      = str(sensors.getValue(SENSOR_IDX_CO2_LVL))              + " " + str(sensors.getUnit(SENSOR_IDX_CO2_LVL))
+            VOC_lvl      = str(sensors.getValue(SENSOR_IDX_VOC_LVL))              + " " + str(sensors.getUnit(SENSOR_IDX_VOC_LVL))
+            
+            # Print data
+            data = [datetime.today().isoformat(), SerialNumber, humidity, radon_st_avg, radon_lt_avg, temperature, pressure, CO2_lvl, VOC_lvl]
+            
+            if (Mode=='terminal'):
+                print tableprint.row(data, width=12)
+            elif (Mode=='pipe'):
+                print data
+            
+            waveplus.disconnect()
+            if (SamplePeriod == 0):
                 break
-        
-        # read values
-        sensors = waveplus.read()
-        
-        # extract
-        humidity     = str(sensors.getValue(SENSOR_IDX_HUMIDITY))             + " " + str(sensors.getUnit(SENSOR_IDX_HUMIDITY))
-        radon_st_avg = str(sensors.getValue(SENSOR_IDX_RADON_SHORT_TERM_AVG)) + " " + str(sensors.getUnit(SENSOR_IDX_RADON_SHORT_TERM_AVG))
-        radon_lt_avg = str(sensors.getValue(SENSOR_IDX_RADON_LONG_TERM_AVG))  + " " + str(sensors.getUnit(SENSOR_IDX_RADON_LONG_TERM_AVG))
-        temperature  = str(sensors.getValue(SENSOR_IDX_TEMPERATURE))          + " " + str(sensors.getUnit(SENSOR_IDX_TEMPERATURE))
-        pressure     = str(sensors.getValue(SENSOR_IDX_REL_ATM_PRESSURE))     + " " + str(sensors.getUnit(SENSOR_IDX_REL_ATM_PRESSURE))
-        CO2_lvl      = str(sensors.getValue(SENSOR_IDX_CO2_LVL))              + " " + str(sensors.getUnit(SENSOR_IDX_CO2_LVL))
-        VOC_lvl      = str(sensors.getValue(SENSOR_IDX_VOC_LVL))              + " " + str(sensors.getUnit(SENSOR_IDX_VOC_LVL))
-        
-        # Print data
-        data = [SerialNumber, datetime.today().isoformat(), humidity, radon_st_avg, radon_lt_avg, temperature, pressure, CO2_lvl, VOC_lvl]
-        
-        if (Mode=='terminal'):
-            print tableprint.row(data, width=12)
-        elif (Mode=='pipe'):
-            print data
-        
-        waveplus.disconnect()
-        if (SamplePeriod == 0):
-            break
-        time.sleep(SamplePeriod)
+            time.sleep(SamplePeriod)
             
 finally:
     waveplus.disconnect()
