@@ -208,7 +208,7 @@ class Sensors():
 
 try:
     if Mode == 'file':
-        file = open(outfile, 'w+')
+        file = open(outfile, 'a+')
     #---- Initialize ----#
     waveplus_devices = []
     device_serials = SerialNumbers.split(",")
