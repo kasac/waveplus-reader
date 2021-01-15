@@ -207,7 +207,7 @@ try:
     waveplus_devices = []
     device_serials = SerialNumbers.split(",")
     for serial in device_serials:
-        waveplus_devices.append(WavePlus(serial))
+        waveplus_devices.append(WavePlus(int(serial)))
     
     if (Mode=='terminal'):
         print "\nPress ctrl+C to exit program\n"
