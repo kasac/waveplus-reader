@@ -76,7 +76,7 @@ if Mode!='pipe' and Mode!='terminal':
 
 SerialNumbers = sys.argv[1]
 SamplePeriod = int(sys.argv[2])
-MaxRetries = 5
+MaxRetries = 10
 
 # ====================================
 # Utility functions for WavePlus class
@@ -132,13 +132,14 @@ class WavePlus():
                 print "GUIDE: (1) Please verify the serial number."
                 print "       (2) Ensure that the device is advertising."
                 print "       (3) Retry connection."
-                sys.exit(1)
+                return False
         
         # Connect to device
         if (self.periph is None):
             self.periph = Peripheral(self.MacAddr)
         if (self.curr_val_char is None):
             self.curr_val_char = self.periph.getCharacteristics(uuid=self.uuid)[0]
+        return True
         
     def read(self):
         if (self.curr_val_char is None):
@@ -227,10 +228,16 @@ try:
             while tries <= MaxRetries:
                 try:
                     tries = tries + 1
-                    waveplus.connect()
+                    connected = waveplus.connect()
+                    if not connected:
+                        raise Exception('Error connecting to WavePlus device.')
                 except BTLEException as e:
                     time.sleep(5)
                     continue
+                except Exception as e:
+                    time.sleep(5)
+                    continue
+                
                 # read values
                 sensors = waveplus.read()
                 
