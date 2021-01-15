@@ -244,7 +244,7 @@ try:
                 VOC_lvl      = str(sensors.getValue(SENSOR_IDX_VOC_LVL))              + " " + str(sensors.getUnit(SENSOR_IDX_VOC_LVL))
                 
                 # Print data
-                data = [datetime.today().isoformat(), waveplus.SN, humidity, radon_st_avg, radon_lt_avg, temperature, pressure, CO2_lvl, VOC_lvl]
+                data = [datetime.today().isoformat(), str(waveplus.SN), humidity, radon_st_avg, radon_lt_avg, temperature, pressure, CO2_lvl, VOC_lvl]
                 
                 if (Mode=='terminal'):
                     print tableprint.row(data, width=12)
