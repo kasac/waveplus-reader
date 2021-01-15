@@ -207,8 +207,6 @@ class Sensors():
         return self.sensor_units[sensor_index]
 
 try:
-    if Mode == 'file':
-        file = open(outfile, 'a+')
     #---- Initialize ----#
     waveplus_devices = []
     device_serials = SerialNumbers.split(",")
@@ -227,7 +225,9 @@ try:
     elif (Mode=='pipe'):
         print header
     elif (Mode=='file'):
+        file = open(outfile, 'a+')
         file.write(','.join(header) + "\n")
+        file.close()
 
     while True:
         for waveplus in waveplus_devices:
@@ -265,7 +265,9 @@ try:
                 elif (Mode=='pipe'):
                     print data
                 elif (Mode=='file'):
+                    file = open(outfile, 'a+')
                     file.write(','.join(data) + "\n")
+                    file.close()
                 
                 waveplus.disconnect()
                 break
@@ -275,7 +277,5 @@ try:
         time.sleep(SamplePeriod)
             
 finally:
-    if Mode == 'file':
-        file.close()
     for waveplus in waveplus_devices:
         waveplus.disconnect()
