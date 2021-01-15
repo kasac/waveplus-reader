@@ -227,7 +227,7 @@ try:
     elif (Mode=='pipe'):
         print header
     elif (Mode=='file'):
-        file.write(header.join(','))
+        file.write(','.join(header))
 
     while True:
         for waveplus in waveplus_devices:
@@ -265,7 +265,7 @@ try:
                 elif (Mode=='pipe'):
                     print data
                 elif (Mode=='file'):
-                    file.write(data.join(','))
+                    file.write(','.join(data))
                 
                 waveplus.disconnect()
                 break
