@@ -74,7 +74,7 @@ if Mode!='pipe' and Mode!='terminal':
     print "    where [pipe > yourfile.txt] is optional and specifies that you want to pipe your results to yourfile.txt."
     sys.exit(1)
 
-SerialNumbers = int(sys.argv[1])
+SerialNumbers = sys.argv[1]
 SamplePeriod = int(sys.argv[2])
 MaxRetries = 5
 
@@ -205,7 +205,7 @@ class Sensors():
 try:
     #---- Initialize ----#
     waveplus_devices = []
-    device_serials = SerialNumbers.split(";")
+    device_serials = SerialNumbers.split(",")
     for serial in device_serials:
         waveplus_devices.append(WavePlus(serial))
     
