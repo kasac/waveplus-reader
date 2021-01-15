@@ -26,7 +26,7 @@
 # Module import dependencies
 # ===============================
 
-from bluepy.btle import UUID, Peripheral, Scanner, DefaultDelegate
+from bluepy.btle import UUID, Peripheral, Scanner, DefaultDelegate, BTLEException
 import sys
 import time
 import struct
@@ -53,7 +53,7 @@ if sys.argv[1].isdigit() is not True or len(sys.argv[1]) != 10:
     sys.exit(1)
 
 if sys.argv[2].isdigit() is not True or int(sys.argv[2])<0:
-    print "ERROR: Invalid SAMPLE-PERIOD. Must be a numerical value larger than zero."
+    print "ERROR: Invalid SAMPLE-PERIOD. Must be a numerical value larger than zero, or zero for a single sample."
     print "USAGE: read_waveplus.py SN SAMPLE-PERIOD [pipe > yourfile.txt]"
     print "    where SN is the 10-digit serial number found under the magnetic backplate of your Wave Plus."
     print "    where SAMPLE-PERIOD is the time in seconds between reading the current values."
@@ -75,6 +75,7 @@ if Mode!='pipe' and Mode!='terminal':
 
 SerialNumber = int(sys.argv[1])
 SamplePeriod = int(sys.argv[2])
+MaxRetries = 5
 
 # ====================================
 # Utility functions for WavePlus class
@@ -215,10 +216,19 @@ try:
         print tableprint.header(header, width=12)
     elif (Mode=='pipe'):
         print header
-        
+
+    tries = 0
     while True:
         
-        waveplus.connect()
+        try:
+            tries = tries + 1
+            waveplus.connect()
+        except BTLEException as e:
+            if tries <= MaxRetries:
+                time.sleep(5)
+                continue
+            else:
+                break
         
         # read values
         sensors = waveplus.read()
@@ -241,7 +251,8 @@ try:
             print data
         
         waveplus.disconnect()
-        
+        if (SamplePeriod == 0):
+            break
         time.sleep(SamplePeriod)
             
 finally:
