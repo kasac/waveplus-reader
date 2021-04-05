@@ -1,8 +1,7 @@
 # Airthings Wave Plus Sensor Reader
 
-This is a project to provide users an interface (```read_waveplus.py```) to read current sensor values from the
-[Airthings Wave Plus](https://airthings.com/wave-plus/) devices using a Raspberry Pi 3 
-Model B over Bluetooth Low Energy (BLE).
+This is a software for datalogging (```read_waveplus.py```) for current sensor values from the
+[Airthings Wave Plus](https://airthings.com/wave-plus/) devices using a Raspberry Pi 0W via Bluetooth Low Energy (BLE).
 
 Airthings Wave Plus is a smart IAQ monitor with Radon detection, including sensors for
 temperature, air pressure, humidity, TVOCs and CO2.
@@ -171,12 +170,23 @@ where you change ```SN``` with the 10-digit serial number, and change ```SAMPLE-
 After a short delay, the script will print the current sensor values to the 
 Raspberry Pi terminal window. Exit the script using ```Ctrl+C```.
 
-## Piping data to a text-file
+## Appending data to a text-file line by line
 
 If you want to pipe the results to a text-file, you can run the script in the following way:
 
 ```
-pi@raspberrypi:~/waveplus-reader $ sudo python2 read_waveplus.py SN SAMPLE-PERIOD pipe > yourfilename.txt
+pi@raspberrypi:~/waveplus-reader $ sudo python2 read_waveplus.py SN SAMPLE-PERIOD file /path/to/your/output/file.txt
+```
+
+To automate the headless datalogging run this command:
+```
+sudo nano /etc/rc.local
+```
+
+And add these two lines:
+```
+sudo python2 /home/pi/jrasanen/waveplus-reader/read_waveplus.py SN SAMPLE-PERIOD file /path/to/your/output/files_`date +%Y-%m-%d_%H:%M:%S`.csv &
+exit 0
 ```
 
 where you change ```SN``` with the 10-digit serial number, and change ```SAMPLE-PERIOD``` to a numerical value of your choice.
@@ -203,6 +213,10 @@ Let us know how it went! If you want contribute, you can do so by posting issues
 
 # Release notes
 
+Release dated 5-Apr-2020
+
+* Updated README for a headless datalogging. 
+ 
 Release dated 04-Dec-2020
 
 * [bug] Fixed missing little-endian specifier.
