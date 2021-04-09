@@ -85,11 +85,13 @@ to the Raspberry Pi terminal window. Look for ```Powered: yes```.
 > **Note:** The ```read_waveplus.py``` script is only compatible with Python2.7.
 
 The next step is to install the bluepy Python library for talking to the BLE stack. 
-For the current released version for Python 2.7:
+Also, lru_cache needs to be downgraded so that the current implementation still works under the most recent Python 2.7:
 
 ```
 pi@raspberrypi:~$ sudo apt-get install python-pip libglib2.0-dev
 pi@raspberrypi:~$ sudo pip2 install bluepy==1.2.0
+pi@raspberrypi:~$ sudo pip uninstall backports.functools_lru_cache
+pi@raspberrypi:~$ sudo pip install backports.functools_lru_cache==1.3
 ```
 
 Make sure your Raspberry Pi has git installed
