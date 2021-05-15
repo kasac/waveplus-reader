@@ -230,8 +230,8 @@ try:
     # print "Device serial number: %s" %(SerialNumber)
 
     header = [['Timestamp', 'SN', 'Humidity', 'Radon ST avg',
-              'Radon LT avg', 'Temperature', 'Pressure', 'CO2 level', 'VOC level'],
-              ["%rH", "Bq/m3", "Bq/m3", "degC", "hPa", "ppm", "ppb"]]
+              'Radon LT avg', 'Temperature', 'Pressure', 'CO2 level', 'VOC level'\n
+               "datetime", "%rH", "Bq/m3", "Bq/m3", "degC", "hPa", "ppm", "ppb"]]
 
     if (Mode == 'terminal'):
         print(tableprint.header(header, width=12))
