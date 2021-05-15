@@ -83,7 +83,7 @@ if Mode == 'file':
 
 SerialNumbers = sys.argv[1]
 SamplePeriod = int(sys.argv[2])
-MaxRetries = 10
+MaxRetries = 100
 
 # ====================================
 # Utility functions for WavePlus class
@@ -229,8 +229,15 @@ try:
 
     # print "Device serial number: %s" %(SerialNumber)
 
-    header = ['Timestamp', 'SN', 'Humidity', 'Radon ST avg',
-              'Radon LT avg', 'Temperature', 'Pressure', 'CO2 level', 'VOC level']
+    header = [['Timestamp', 'SN', 'Humidity', 'Radon ST avg',
+              'Radon LT avg', 'Temperature', 'Pressure', 'CO2 level', 'VOC level'],
+              [ str(sensors.getUnit(SENSOR_IDX_HUMIDITY)), 
+                str(sensors.getUnit(SENSOR_IDX_RADON_SHORT_TERM_AVG)),
+                str(sensors.getUnit(SENSOR_IDX_RADON_LONG_TERM_AVG)),
+                str(sensors.getUnit(SENSOR_IDX_TEMPERATURE)),
+                str(sensors.getUnit(SENSOR_IDX_REL_ATM_PRESSURE)),
+                str(sensors.getUnit(SENSOR_IDX_CO2_LVL)),
+                str(sensors.getUnit(SENSOR_IDX_VOC_LVL)) ]]
 
     if (Mode == 'terminal'):
         print(tableprint.header(header, width=12))
@@ -261,20 +268,13 @@ try:
                 sensors = waveplus.read()
 
                 # extract
-                humidity = str(sensors.getValue(SENSOR_IDX_HUMIDITY)) + \
-                    " " + str(sensors.getUnit(SENSOR_IDX_HUMIDITY))
-                radon_st_avg = str(sensors.getValue(SENSOR_IDX_RADON_SHORT_TERM_AVG)) + \
-                    " " + str(sensors.getUnit(SENSOR_IDX_RADON_SHORT_TERM_AVG))
-                radon_lt_avg = str(sensors.getValue(SENSOR_IDX_RADON_LONG_TERM_AVG)) + \
-                    " " + str(sensors.getUnit(SENSOR_IDX_RADON_LONG_TERM_AVG))
-                temperature = str(sensors.getValue(
-                    SENSOR_IDX_TEMPERATURE)) + " " + str(sensors.getUnit(SENSOR_IDX_TEMPERATURE))
-                pressure = str(sensors.getValue(SENSOR_IDX_REL_ATM_PRESSURE)) + \
-                    " " + str(sensors.getUnit(SENSOR_IDX_REL_ATM_PRESSURE))
-                CO2_lvl = str(sensors.getValue(SENSOR_IDX_CO2_LVL)) + \
-                    " " + str(sensors.getUnit(SENSOR_IDX_CO2_LVL))
-                VOC_lvl = str(sensors.getValue(SENSOR_IDX_VOC_LVL)) + \
-                    " " + str(sensors.getUnit(SENSOR_IDX_VOC_LVL))
+                humidity = str(sensors.getValue(SENSOR_IDX_HUMIDITY))
+                radon_st_avg = str(sensors.getValue(SENSOR_IDX_RADON_SHORT_TERM_AVG))
+                radon_lt_avg = str(sensors.getValue(SENSOR_IDX_RADON_LONG_TERM_AVG))
+                temperature = str(sensors.getValue(SENSOR_IDX_TEMPERATURE))
+                pressure = str(sensors.getValue(SENSOR_IDX_REL_ATM_PRESSURE))
+                CO2_lvl = str(sensors.getValue(SENSOR_IDX_CO2_LVL))
+                VOC_lvl = str(sensors.getValue(SENSOR_IDX_VOC_LVL))
 
                 # Print data
                 data = [datetime.today().isoformat(), str(waveplus.SN), humidity,
