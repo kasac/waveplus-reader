@@ -229,9 +229,10 @@ try:
 
     # print "Device serial number: %s" %(SerialNumber)
 
-    header = [['Timestamp', 'SN', 'Humidity', 'Radon ST avg',
-              'Radon LT avg', 'Temperature', 'Pressure', 'CO2 level', 'VOC level'\n
-               "datetime", "%rH", "Bq/m3", "Bq/m3", "degC", "hPa", "ppm", "ppb"]]
+    header = ['Timestamp', 'SN', 'Humidity', 'Radon ST avg',
+              'Radon LT avg', 'Temperature', 'Pressure', 'CO2 level', 'VOC level']
+
+    headunits = ["datetime", "%rH", "Bq/m3", "Bq/m3", "degC", "hPa", "ppm", "ppb"]
 
     if (Mode == 'terminal'):
         print(tableprint.header(header, width=12))
@@ -240,6 +241,7 @@ try:
     elif (Mode == 'file'):
         file = open(outfile, 'a+')
         file.write(','.join(header) + "\n")
+        file.write(','.join(headunits) + "\n")
         file.close()
 
     while True:
