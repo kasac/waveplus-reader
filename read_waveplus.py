@@ -231,13 +231,7 @@ try:
 
     header = [['Timestamp', 'SN', 'Humidity', 'Radon ST avg',
               'Radon LT avg', 'Temperature', 'Pressure', 'CO2 level', 'VOC level'],
-              [ str(sensors.getUnit(SENSOR_IDX_HUMIDITY)), 
-                str(sensors.getUnit(SENSOR_IDX_RADON_SHORT_TERM_AVG)),
-                str(sensors.getUnit(SENSOR_IDX_RADON_LONG_TERM_AVG)),
-                str(sensors.getUnit(SENSOR_IDX_TEMPERATURE)),
-                str(sensors.getUnit(SENSOR_IDX_REL_ATM_PRESSURE)),
-                str(sensors.getUnit(SENSOR_IDX_CO2_LVL)),
-                str(sensors.getUnit(SENSOR_IDX_VOC_LVL)) ]]
+              ["%rH", "Bq/m3", "Bq/m3", "degC", "hPa", "ppm", "ppb"]]
 
     if (Mode == 'terminal'):
         print(tableprint.header(header, width=12))
