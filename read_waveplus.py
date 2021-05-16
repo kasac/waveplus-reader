@@ -232,7 +232,7 @@ try:
     header = ['Timestamp', 'SN', 'Humidity', 'Radon ST avg',
               'Radon LT avg', 'Temperature', 'Pressure', 'CO2 level', 'VOC level']
 
-    headunits = ["datetime", "%rH", "Bq/m3", "Bq/m3", "degC", "hPa", "ppm", "ppb"]
+    headunits = ["datetime", "Integer", "%rH", "Bq/m3", "Bq/m3", "degC", "hPa", "ppm", "ppb"]
 
     if (Mode == 'terminal'):
         print(tableprint.header(header, width=12))
