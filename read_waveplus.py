@@ -83,7 +83,7 @@ if Mode == 'file':
 
 SerialNumbers = sys.argv[1]
 SamplePeriod = int(sys.argv[2])
-MaxRetries = 100
+MaxRetries = 10
 
 # ====================================
 # Utility functions for WavePlus class
@@ -270,7 +270,7 @@ try:
                 VOC_lvl = str(sensors.getValue(SENSOR_IDX_VOC_LVL))
 
                 # Print data
-                data = [datetime.datetime.now(), str(waveplus.SN), humidity,
+                data = [datetime.today().isoformat(sep=' ', timespec='seconds'), str(waveplus.SN), humidity,
                         radon_st_avg, radon_lt_avg, temperature, pressure, CO2_lvl, VOC_lvl]
 
                 if (Mode == 'terminal'):
