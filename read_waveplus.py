@@ -230,7 +230,7 @@ try:
     # print "Device serial number: %s" %(SerialNumber)
 
     header = ['Timestamp', 'Sensor Serial Number', 'Humidity - %rH', 'Radon ST avg - Bq/m3',
-              'Radon LT avg - Bq/m3', 'Temperature - degC', 'Pressure - hPa', 'CO2 level - ppm', 'VOC level - ppb']
+              'Radon LT avg - Bq/m3', 'T - degC', 'P - hPa', 'CO2 - ppm', 'VOC - ppb']
 
     if (Mode == 'terminal'):
         print(tableprint.header(header, width=12))
