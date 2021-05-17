@@ -229,10 +229,8 @@ try:
 
     # print "Device serial number: %s" %(SerialNumber)
 
-    header = ['Timestamp', 'SN', 'Humidity', 'Radon ST avg',
-              'Radon LT avg', 'Temperature', 'Pressure', 'CO2 level', 'VOC level']
-
-    headunits = ["datetime", "Integer", "%rH", "Bq/m3", "Bq/m3", "degC", "hPa", "ppm", "ppb"]
+    header = ['Timestamp', 'Sensor Serial Number', 'Humidity - %rH', 'Radon ST avg - Bq/m3',
+              'Radon LT avg - Bq/m3', 'Temperature - degC', 'Pressure - hPa', 'CO2 level - ppm', 'VOC level - ppb']
 
     if (Mode == 'terminal'):
         print(tableprint.header(header, width=12))
@@ -241,7 +239,6 @@ try:
     elif (Mode == 'file'):
         file = open(outfile, 'a+')
         file.write(','.join(header) + "\n")
-        file.write(','.join(headunits) + "\n")
         file.close()
 
     while True:
@@ -273,7 +270,7 @@ try:
                 VOC_lvl = str(sensors.getValue(SENSOR_IDX_VOC_LVL))
 
                 # Print data
-                data = [datetime.today().isoformat(), str(waveplus.SN), humidity,
+                data = [datetime.datetime.now(), str(waveplus.SN), humidity,
                         radon_st_avg, radon_lt_avg, temperature, pressure, CO2_lvl, VOC_lvl]
 
                 if (Mode == 'terminal'):
